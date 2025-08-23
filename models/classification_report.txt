@@ -1,0 +1,38 @@
+Best params:
+{'clf__estimator__C': 2.0, 'tfidf__min_df': 3, 'tfidf__ngram_range': (1, 2)}
+
+Best CV score (f1_macro): 0.991754966491951
+
+Classification report:
+                           precision    recall  f1-score   support
+
+                 Advocate      1.000     1.000     1.000         4
+                     Arts      1.000     1.000     1.000         7
+       Automation Testing      0.833     1.000     0.909         5
+               Blockchain      1.000     1.000     1.000         8
+         Business Analyst      1.000     1.000     1.000         6
+           Civil Engineer      1.000     1.000     1.000         5
+             Data Science      1.000     1.000     1.000         8
+                 Database      1.000     1.000     1.000         7
+          DevOps Engineer      1.000     0.909     0.952        11
+         DotNet Developer      1.000     1.000     1.000         5
+            ETL Developer      1.000     1.000     1.000         8
+   Electrical Engineering      1.000     1.000     1.000         6
+                       HR      1.000     1.000     1.000         9
+                   Hadoop      1.000     1.000     1.000         8
+       Health and fitness      1.000     1.000     1.000         6
+           Java Developer      1.000     1.000     1.000        17
+      Mechanical Engineer      1.000     1.000     1.000         8
+Network Security Engineer      1.000     1.000     1.000         5
+       Operations Manager      1.000     1.000     1.000         8
+                      PMO      1.000     1.000     1.000         6
+         Python Developer      1.000     1.000     1.000        10
+            SAP Developer      1.000     1.000     1.000         5
+                    Sales      1.000     1.000     1.000         8
+                  Testing      1.000     1.000     1.000        14
+            Web Designing      1.000     1.000     1.000         9
+
+                 accuracy                          0.995       193
+                macro avg      0.993     0.996     0.994       193
+             weighted avg      0.996     0.995     0.995       193
+

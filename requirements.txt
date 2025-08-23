@@ -1,0 +1,11 @@
+pandas
+numpy
+scikit-learn
+joblib
+nltk
+spacy
+pdfminer.six
+python-docx
+tqdm
+streamlit
+pyyaml
