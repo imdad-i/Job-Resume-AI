@@ -25,11 +25,36 @@ streamlit run src/app_streamlit.py
 
 Deploy to Streamlit Cloud (recommended for sharing)
 
-1. Initialize git, commit, and push to a new GitHub repository (see below). Do NOT commit `models/resume_clf.joblib` if it's large; instead use one of these options:
-   - Upload the model to a cloud storage (S3, Azure Blob) and modify `src/infer.py` to fetch it at startup.
-   - Use Git LFS for large files.
+Option 2 — Use Git LFS (good for personal projects where you want the model versioned with code)
 
-2. On https://streamlit.io/cloud, create a new app and point it to your GitHub repo and the `src/app_streamlit.py` file.
+1. Install Git LFS locally (follow platform instructions). On Windows with Chocolatey or scoop, or from https://git-lfs.github.com/.
+
+2. Track the model file and commit it:
+
+```powershell
+git lfs install
+git lfs track "models/*.joblib"
+git add .gitattributes
+git add models/resume_clf.joblib
+git commit -m "Add trained model via Git LFS"
+```
+
+3. Create a repository on GitHub (via the website), then add the remote and push:
+
+```powershell
+git remote add origin https://github.com/<your-username>/<repo-name>.git
+git branch -M main
+git push -u origin main
+```
+
+4. On https://streamlit.io/cloud, click "New app", connect your GitHub repo, pick branch `main` and file `src/app_streamlit.py`.
+
+Notes about Git LFS
+- Git LFS stores the pointer file in git and the actual binary in LFS storage. Your GitHub account has LFS quotas; for personal projects this is usually fine but check usage.
+
+Option 3 — External hosting (alternative)
+
+- Host the model in S3/GCS or a release asset, set `MODEL_URL` in Streamlit Cloud secrets, and update `src/infer.py` to download the model at first run. This keeps the git repo small and is more flexible for production.
 
 Notes
 
