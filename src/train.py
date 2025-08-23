@@ -13,13 +13,12 @@ from sklearn.metrics import classification_report, confusion_matrix
 from nltk.corpus import stopwords
 import nltk
 
-# Ensure stopwords are available
 try:
     _ = stopwords.words("english")
 except LookupError:
     nltk.download("stopwords")
 
-DATA_PATH = "data/raw/UpdatedResumeDataSet.csv"  # adjust if your file name differs
+DATA_PATH = "data/raw/UpdatedResumeDataSet.csv" 
 MODEL_PATH = "models/resume_clf.joblib"
 REPORT_PATH = "models/classification_report.txt"
 
@@ -30,11 +29,11 @@ def clean_text(text: str) -> str:
     if not isinstance(text, str):
         return ""
     text = text.lower()
-    text = re.sub(r"\S+@\S+", " ", text)              # emails
-    text = re.sub(r"http\S+|www\.\S+", " ", text)     # urls
-    text = re.sub(r"\d+", " ", text)                  # numbers
-    text = re.sub(r"[\r\n]+", " ", text)              # newlines
-    text = re.sub(r"[^a-z\s+#.]", " ", text)          # keep letters, space, # and .
+    text = re.sub(r"\S+@\S+", " ", text)             
+    text = re.sub(r"http\S+|www\.\S+", " ", text)    
+    text = re.sub(r"\d+", " ", text)                
+    text = re.sub(r"[\r\n]+", " ", text)              
+    text = re.sub(r"[^a-z\s+#.]", " ", text)         
     tokens = [w for w in text.split() if w not in STOPWORDS]
     return " ".join(tokens)
 
@@ -57,7 +56,7 @@ def main():
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    # ---- Build pipeline (TF-IDF -> LinearSVC calibrated for probabilities)
+    # ---- Pipeline 
     pipeline = Pipeline([
         ("tfidf", TfidfVectorizer(
             analyzer="word",
@@ -68,9 +67,9 @@ def main():
         )),
         ("clf", CalibratedClassifierCV(
             estimator=LinearSVC(class_weight="balanced", random_state=42),
-            cv=3,                 # calibration folds
-            method="sigmoid",     # default; fine for text
-            n_jobs=-1             # parallelize calibration if available
+            cv=3,            
+            method="sigmoid",     
+            n_jobs=-1             
         ))
     ])
 
@@ -89,7 +88,7 @@ def main():
         cv=cv,
         n_jobs=-1,
         verbose=1,
-        refit=True,          # refit on the whole training set with best params
+        refit=True,       
         return_train_score=False
     )
 
@@ -98,8 +97,6 @@ def main():
 
     print("Best params:", grid.best_params_)
     print("Best CV score (f1_macro):", grid.best_score_)
-
-    # Use the *fitted* best pipeline
     best = grid.best_estimator_
 
     # ---- Evaluate

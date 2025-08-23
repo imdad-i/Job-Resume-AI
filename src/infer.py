@@ -4,33 +4,27 @@ from typing import List, Tuple
 from pathlib import Path
 import os
 
-# Try to load NLTK stopwords; if unavailable try to download them. As a last
-# resort fall back to a small built-in stopword set so imports never fail in
-# environments without nltk data (e.g., fresh Streamlit Cloud containers).
 try:
     from nltk.corpus import stopwords
     try:
         STOPWORDS = set(stopwords.words('english'))
     except LookupError:
-        # Attempt to download stopwords data
         try:
             import nltk
             nltk.download('stopwords')
             STOPWORDS = set(stopwords.words('english'))
         except Exception:
-            # Fallback small stopword set
             STOPWORDS = {
                 'the', 'and', 'is', 'in', 'to', 'of', 'a', 'for', 'on', 'with',
                 'as', 'by', 'an', 'be', 'this', 'that', 'it', 'from', 'or'
             }
 except Exception:
-    # If nltk is not installed or import fails, provide a minimal stopword set
     STOPWORDS = {
         'the', 'and', 'is', 'in', 'to', 'of', 'a', 'for', 'on', 'with',
         'as', 'by', 'an', 'be', 'this', 'that', 'it', 'from', 'or'
     }
 
-# Default model path resolved relative to the repository root (two levels up from this file)
+
 MODEL_PATH = Path(__file__).resolve().parent.parent.joinpath("models", "resume_clf.joblib")
 
 def clean_text(text: str) -> str:
@@ -46,24 +40,21 @@ def clean_text(text: str) -> str:
 
 class ResumeClassifier:
     def __init__(self, model_path: str | Path = MODEL_PATH):
-        # Accept a Path or string. For relative paths we try a few locations so the
-        # app works whether Streamlit changed the current working directory or not.
         mp = Path(model_path)
 
         candidates: list[Path] = []
-        # If absolute path provided, try it directly
         if mp.is_absolute():
             candidates.append(mp)
         else:
-            # 1) Resolve relative to repository root (parent.parent of this file)
+            
             repo_root = Path(__file__).resolve().parent.parent
             candidates.append((repo_root / mp).resolve())
-            # 2) Resolve relative to current working directory
+           
             try:
                 candidates.append((Path.cwd() / mp).resolve())
             except Exception:
                 pass
-            # 3) Common fallback: look inside repo's models folder using the filename
+        
             candidates.append((repo_root / 'models' / mp.name).resolve())
 
         # Remove duplicates while preserving order
@@ -94,7 +85,6 @@ class ResumeClassifier:
     def predict(self, text: str) -> Tuple[str, float, List[Tuple[str, float]]]:
         cleaned = clean_text(text)
         pred = self.pipeline.predict([cleaned])[0]
-        # calibrated proba
         proba = self.pipeline.predict_proba([cleaned])[0]
         idx = self.classes_.index(pred)
         topk_idx = proba.argsort()[::-1][:5]

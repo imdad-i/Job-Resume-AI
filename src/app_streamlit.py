@@ -1,6 +1,4 @@
 import streamlit as st
-# Ensure NLTK stopwords are available at runtime (Streamlit Cloud won't have them by default)
-# Do this before importing `infer` so infer's import-time STOPWORDS resolution can use nltk.
 import nltk
 from pathlib import Path
 from file_readers import read_any
@@ -24,23 +22,12 @@ st.set_page_config(page_title="AI Resume Classifier", layout="centered")
 # Load classifier
 @st.cache_resource
 def load_classifier():
-    # Compute a repo-relative model path so Streamlit runs find the model regardless of CWD
     model_path = Path(__file__).resolve().parent.parent.joinpath('models', 'resume_clf.joblib')
     return ResumeClassifier(model_path=str(model_path))
 
 clf = load_classifier()
 
 st.title("📄 AI Resume Classifier")
-
-# Show runtime info in the sidebar for debugging
-st.sidebar.markdown("### Runtime info")
-st.sidebar.write(f"Stopwords source: **{stopwords_source}**")
-try:
-    st.sidebar.write(f"Model path: `{clf.pipeline}`")
-except Exception:
-    # pipeline may not be loaded in some error states; show path instead
-    model_path = Path(__file__).resolve().parent.parent.joinpath('models', 'resume_clf.joblib')
-    st.sidebar.write(f"Model path (computed): `{model_path}`")
 
 # File upload
 uploaded_file = st.file_uploader("Upload your resume (PDF, DOCX, or TXT)", type=["pdf", "docx", "txt"])
