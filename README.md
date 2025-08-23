@@ -50,6 +50,7 @@ git push -u origin main
 4. On https://streamlit.io/cloud, click "New app", connect your GitHub repo, pick branch `main` and file `src/app_streamlit.py`.
 
 Notes about Git LFS
+
 - Git LFS stores the pointer file in git and the actual binary in LFS storage. Your GitHub account has LFS quotas; for personal projects this is usually fine but check usage.
 
 Option 3 — External hosting (alternative)

@@ -4,8 +4,31 @@ from typing import List, Tuple
 from pathlib import Path
 import os
 
-from nltk.corpus import stopwords
-STOPWORDS = set(stopwords.words('english'))
+# Try to load NLTK stopwords; if unavailable try to download them. As a last
+# resort fall back to a small built-in stopword set so imports never fail in
+# environments without nltk data (e.g., fresh Streamlit Cloud containers).
+try:
+    from nltk.corpus import stopwords
+    try:
+        STOPWORDS = set(stopwords.words('english'))
+    except LookupError:
+        # Attempt to download stopwords data
+        try:
+            import nltk
+            nltk.download('stopwords')
+            STOPWORDS = set(stopwords.words('english'))
+        except Exception:
+            # Fallback small stopword set
+            STOPWORDS = {
+                'the', 'and', 'is', 'in', 'to', 'of', 'a', 'for', 'on', 'with',
+                'as', 'by', 'an', 'be', 'this', 'that', 'it', 'from', 'or'
+            }
+except Exception:
+    # If nltk is not installed or import fails, provide a minimal stopword set
+    STOPWORDS = {
+        'the', 'and', 'is', 'in', 'to', 'of', 'a', 'for', 'on', 'with',
+        'as', 'by', 'an', 'be', 'this', 'that', 'it', 'from', 'or'
+    }
 
 # Default model path resolved relative to the repository root (two levels up from this file)
 MODEL_PATH = Path(__file__).resolve().parent.parent.joinpath("models", "resume_clf.joblib")

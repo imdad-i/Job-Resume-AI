@@ -1,15 +1,23 @@
 import streamlit as st
-from infer import ResumeClassifier, clean_text
+# Ensure NLTK stopwords are available at runtime (Streamlit Cloud won't have them by default)
+# Do this before importing `infer` so infer's import-time STOPWORDS resolution can use nltk.
+import nltk
+from pathlib import Path
 from file_readers import read_any
 from sklearn.metrics.pairwise import cosine_similarity
-from pathlib import Path
-import nltk
 
-# Ensure NLTK stopwords are available at runtime (Streamlit Cloud won't have them by default)
+stopwords_source = "builtin"
 try:
     nltk.data.find('corpora/stopwords')
+    stopwords_source = 'nltk'
 except Exception:
-    nltk.download('stopwords')
+    try:
+        nltk.download('stopwords')
+        stopwords_source = 'nltk'
+    except Exception:
+        stopwords_source = 'builtin'
+
+from infer import ResumeClassifier, clean_text
 
 st.set_page_config(page_title="AI Resume Classifier", layout="centered")
 
@@ -23,6 +31,16 @@ def load_classifier():
 clf = load_classifier()
 
 st.title("📄 AI Resume Classifier")
+
+# Show runtime info in the sidebar for debugging
+st.sidebar.markdown("### Runtime info")
+st.sidebar.write(f"Stopwords source: **{stopwords_source}**")
+try:
+    st.sidebar.write(f"Model path: `{clf.pipeline}`")
+except Exception:
+    # pipeline may not be loaded in some error states; show path instead
+    model_path = Path(__file__).resolve().parent.parent.joinpath('models', 'resume_clf.joblib')
+    st.sidebar.write(f"Model path (computed): `{model_path}`")
 
 # File upload
 uploaded_file = st.file_uploader("Upload your resume (PDF, DOCX, or TXT)", type=["pdf", "docx", "txt"])
