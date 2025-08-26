@@ -6,6 +6,43 @@ Live demo: https://job-resume-ai-l8lw8x6ezm49kbwmfejzym.streamlit.app/
 
 AI Resume Classifier is a small, production-oriented web demo that classifies uploaded resumes into job categories and computes similarity against a provided job description. It demonstrates the full ML lifecycle: data cleaning, model training, packaging, and cloud deployment with Streamlit.
 
+## Disclaimer
+
+This project uses a Resume Classification Model trained on a predefined set of 25 job categories:
+
+1. Advocate
+2. Arts
+3. Automation Testing
+4. Blockchain
+5. Business Analyst
+6. Civil Engineer
+7. Data Science
+8. Database
+9. DevOps Engineer
+10. DotNet Developer
+11. ETL Developer
+12. Electrical Engineering
+13. HR
+14. Hadoop
+15. Health and fitness
+16. Java Developer
+17. Mechanical Engineer
+18. Network Security Engineer
+19. Operations Manager
+20. PMO
+21. Python Developer
+22. SAP Developer
+23. Sales
+24. Testing
+25. Web Designing
+
+The model currently uses TF-IDF (Term Frequency–Inverse Document Frequency) combined with Cosine Similarity for text representation and comparison.
+It does not use advanced language models such as BERT or Sentence Embeddings.
+
+As a result:
+If a job description is outside of these categories or contains terms that are not present in the training corpus, the similarity score might be very low (close to 0%).
+Predictions are best suited for job descriptions that are semantically close to the above categories.
+
 ## Why this project
 
 - Problem solved: Fast, automated resume categorization and similarity scoring to help recruiters and applicants match resumes to roles.
